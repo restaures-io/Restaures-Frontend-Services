@@ -39,7 +39,7 @@ class OnboardingAsView extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => const LoginScreenDartView(
+                            builder: (_) => LoginScreenDartView(
                               userType: UserRole.customer,
                             ),
                           ),
@@ -70,7 +70,7 @@ class OnboardingAsView extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => const LoginScreenDartView(
+                            builder: (_) => LoginScreenDartView(
                               userType: UserRole.restaurant,
                             ),
                           ),

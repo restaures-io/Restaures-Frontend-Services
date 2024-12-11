@@ -1,20 +1,26 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:getwidget/components/text_field/gf_text_field_rounded.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:provider/provider.dart';
+import 'package:restaures/components/Global/api_response.dart';
 import 'package:restaures/components/Global/enums.dart';
 // import model
 import 'package:restaures/models/login_screen_dart/login_screen_dart_model.dart';
 // import controller
 import 'package:restaures/controllers/login_screen_dart/login_screen_dart_controller.dart';
 import 'package:restaures/views/User/bottom_navigator_user/bottom_navigator_user_view.dart';
+import 'package:toastification/toastification.dart';
 
 class LoginScreenDartView extends StatelessWidget {
   // Type of LoginScreenDartView
   final UserRole userType;
 
-  const LoginScreenDartView({super.key, required this.userType});
+  LoginScreenDartView({super.key, required this.userType});
 
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     LoginScreenDartController viewController = LoginScreenDartController();
@@ -29,8 +35,8 @@ class LoginScreenDartView extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Theme.of(context).colorScheme.secondary,
-                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.onPrimary,
+                  Theme.of(context).colorScheme.onPrimary,
                 ],
               ),
             ),
@@ -53,7 +59,7 @@ class LoginScreenDartView extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: 40,
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: Theme.of(context).colorScheme.secondary,
                             ),
                         textAlign: TextAlign.left,
                       ),
@@ -64,6 +70,7 @@ class LoginScreenDartView extends StatelessWidget {
                         .colorScheme
                         .onPrimary
                         .withOpacity(0.5),
+                    controller: emailController,
                     editingbordercolor: Theme.of(context).colorScheme.primary,
                     idlebordercolor: Theme.of(context).colorScheme.primary,
                     style: TextStyle(
@@ -85,6 +92,7 @@ class LoginScreenDartView extends StatelessWidget {
                   Consumer<LoginScreenDartModel>(
                       builder: (context, viewModel, child) {
                     return GFTextFieldRounded(
+                      controller: passwordController,
                       backgroundcolor: Theme.of(context)
                           .colorScheme
                           .onPrimary
@@ -137,9 +145,8 @@ class LoginScreenDartView extends StatelessWidget {
                               side: WidgetStateBorderSide.resolveWith(
                                 (states) => BorderSide(
                                     width: 1.0,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onPrimary),
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
                               ),
                               onChanged: (value) {
                                 viewController
@@ -154,7 +161,7 @@ class LoginScreenDartView extends StatelessWidget {
                           }),
                           Text('Show Password',
                               style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary,
+                                color: Theme.of(context).colorScheme.primary,
                                 fontStyle: FontStyle.italic,
                                 fontSize: 15,
                               )),
@@ -172,12 +179,35 @@ class LoginScreenDartView extends StatelessWidget {
                       borderShape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    BottomNavigatorUserView()));
+                      onPressed: () async {
+                        viewController.setLoginRequestModel(context,
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim());
+                        ApiResponse? response = await viewController.login(
+                          context,
+                        );
+                        if (response != null && response.success) {
+                          log('Success');
+                          toastification.show(
+                            title: Text(response.message),
+                            showIcon: true,
+                            type: ToastificationType.success,
+                            autoCloseDuration: const Duration(seconds: 5),
+                          );
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      BottomNavigatorUserView()));
+                        } else if (response == null) {
+                          log('Error:500');
+                          toastification.show(
+                            title: Text('Error:500'),
+                            showIcon: true,
+                            type: ToastificationType.error,
+                            autoCloseDuration: const Duration(seconds: 5),
+                          );
+                        }
                       },
                       text: 'Login',
                       textStyle: TextStyle(
@@ -189,6 +219,29 @@ class LoginScreenDartView extends StatelessWidget {
                           size: 25),
                       color: Theme.of(context).colorScheme.secondary,
                     ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Don\'t have an account?',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 15,
+                          )),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text('Sign Up',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontStyle: FontStyle.italic,
+                              fontSize: 15,
+                            )),
+                      ),
+                    ],
                   ),
                 ],
               ),
