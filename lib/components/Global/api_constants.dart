@@ -7,4 +7,7 @@ class ApiUrl {
   static const String getRestaurantMenu = "menu/restaurant";
   static const String getMenu = "menu";
   static const String uploadFile = "upload-file";
+  static const String getAllRestaurant = "customer/restaurant";
+  static const String getRestaurantById = "customer/restaurant/";
+  static const String apiFavoriteRestaurants = "customer/favorite/restaurant";
 }

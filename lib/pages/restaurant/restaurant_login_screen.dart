@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaures/components/Global/api_response.dart';
@@ -137,6 +139,10 @@ class _RestaurantLoginScreenState extends State<RestaurantLoginScreen> {
     if (response.success) {
       await SharedPreferencesService.setString(
           'access_token', response.data['access_token']);
+      await SharedPreferencesService.setString('account_type', 'restaurant');
+      await SharedPreferencesService.setString('user_id', response.data['_id']);
+      await SharedPreferencesService.setString(
+          'user', jsonEncode(response.data));
       Navigator.push(
           context,
           MaterialPageRoute(

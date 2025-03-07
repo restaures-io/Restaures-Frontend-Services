@@ -1,44 +1,49 @@
-// To parse this JSON data, do
-//
-//     final menuItem = menuItemFromJson(jsonString);
-
 import 'dart:convert';
 
-MenuItem menuItemFromJson(String str) => MenuItem.fromJson(json.decode(str));
-
-String menuItemToJson(MenuItem data) => json.encode(data.toJson());
-
 class MenuItem {
-  String? name;
-  String? description;
-  List<String>? images;
-  int? price;
-  int? timeToPrepare;
-  String? category;
+  String? id;
+  String name;
+  String? restaurantId;
+  String description;
+  int price;
+  List<String> images;
+  int timeToPrepare;
+  String category;
 
   MenuItem({
-    this.name,
-    this.description,
-    this.images,
-    this.price,
-    this.timeToPrepare,
-    this.category,
+    this.id,
+    required this.name,
+    this.restaurantId,
+    required this.description,
+    required this.price,
+    required this.images,
+    required this.timeToPrepare,
+    required this.category,
   });
 
+  factory MenuItem.fromRawJson(String str) =>
+      MenuItem.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
   factory MenuItem.fromJson(Map<String, dynamic> json) => MenuItem(
+        id: json["_id"],
         name: json["name"],
+        restaurantId: json["restaurant_id"],
         description: json["description"],
-        images: List<String>.from(json["images"].map((x) => x)),
         price: json["price"],
+        images: List<String>.from(json["images"].map((x) => x)),
         timeToPrepare: json["timeToPrepare"],
         category: json["category"],
       );
 
   Map<String, dynamic> toJson() => {
+        "_id": id,
         "name": name,
+        "restaurant_id": restaurantId,
         "description": description,
-        "images": List<dynamic>.from(images!.map((x) => x)),
         "price": price,
+        "images": List<dynamic>.from(images.map((x) => x)),
         "timeToPrepare": timeToPrepare,
         "category": category,
       };

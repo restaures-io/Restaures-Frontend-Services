@@ -20,6 +20,8 @@ dependencies:
   toastification: ^3.0.1
   shared_preferences: ^2.5.2
   image_picker: ^1.1.2
+  slider_button: ^2.1.0
+  flutter_initicon: ^3.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

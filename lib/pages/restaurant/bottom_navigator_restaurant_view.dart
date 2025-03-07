@@ -3,6 +3,8 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:restaures/pages/restaurant/add_menu_restaurant_view.dart';
+import 'package:restaures/pages/restaurant/enquiry_restaurant_view.dart';
+import 'package:restaures/pages/restaurant/restaurant_profile_view.dart';
 
 // import model
 class BottomNavigatorRestaurantView extends StatefulWidget {
@@ -10,10 +12,8 @@ class BottomNavigatorRestaurantView extends StatefulWidget {
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
   static final List<Widget> _widgetOptions = <Widget>[
     AddMenuRestaurantView(),
-    const Text(
-      'All Orders',
-      style: optionStyle,
-    ),
+    EnquiryRestaurantView(),
+    RestaurantProfileScreen(),
   ];
 
   const BottomNavigatorRestaurantView({super.key});
@@ -32,7 +32,8 @@ class _BottomNavigatorRestaurantViewState
       backgroundColor: Colors.white,
       body: SafeArea(
           child: Center(
-        child: BottomNavigatorRestaurantView._widgetOptions.elementAt(0),
+        child: BottomNavigatorRestaurantView._widgetOptions
+            .elementAt(_selectedIndex),
       )),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -65,8 +66,12 @@ class _BottomNavigatorRestaurantViewState
                     text: 'Add Menu',
                   ),
                   GButton(
-                    icon: LineIcons.shoppingCart,
-                    text: 'Orders',
+                    icon: Icons.query_builder,
+                    text: 'Enquiries',
+                  ),
+                  GButton(
+                    icon: LineIcons.user,
+                    text: 'Profile',
                   ),
                 ],
                 selectedIndex: _selectedIndex,

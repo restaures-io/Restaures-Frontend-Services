@@ -1,73 +1,144 @@
-import 'package:restaures/model/bank_details.dart';
-import 'package:restaures/model/location.dart';
-import 'package:restaures/model/menu_item.dart';
-import 'package:restaures/model/owner.dart';
-import 'package:restaures/model/working_day.dart';
+import 'dart:convert';
 
-class Restaurant {
-  final String id;
-  final String name;
-  final String managementPhone;
-  final String restaurantEmail;
-  final Location location;
-  final List<WorkingDay> workingDays;
-  final List<MenuItem> menu;
-  final Owner owner;
-  final String panNumber;
-  final String gstinNumber;
-  final BankDetails bankDetails;
-  final String fssaiRegistrationNumber;
+class RestaurantModel {
+  List<String> images;
+  String id;
+  String name;
+  Location location;
+  List<WorkingDay> workingDays;
+  List<String> favoriteBy;
+  DateTime createdAt;
+  DateTime updatedAt;
 
-  Restaurant({
+  RestaurantModel({
+    required this.images,
     required this.id,
     required this.name,
-    required this.managementPhone,
-    required this.restaurantEmail,
     required this.location,
     required this.workingDays,
-    required this.menu,
-    required this.owner,
-    required this.panNumber,
-    required this.gstinNumber,
-    required this.bankDetails,
-    required this.fssaiRegistrationNumber,
+    required this.favoriteBy,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
-  factory Restaurant.fromJson(Map<String, dynamic> json) {
-    return Restaurant(
-      id: json['id'],
-      name: json['name'],
-      managementPhone: json['managementPhone'],
-      restaurantEmail: json['restaurantEmail'],
-      location: Location.fromJson(json['location']),
-      workingDays: (json['workingDays'] as List)
-          .map((day) => WorkingDay.fromJson(day))
-          .toList(),
-      menu: (json['menu'] as List)
-          .map((item) => MenuItem.fromJson(item))
-          .toList(),
-      owner: Owner.fromJson(json['owner']),
-      panNumber: json['panNumber'],
-      gstinNumber: json['gstinNumber'],
-      bankDetails: BankDetails.fromJson(json['bankDetails']),
-      fssaiRegistrationNumber: json['fssaiRegistrationNumber'],
-    );
-  }
+  factory RestaurantModel.fromRawJson(String str) =>
+      RestaurantModel.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'managementPhone': managementPhone,
-      'restaurantEmail': restaurantEmail,
-      'location': location.toJson(),
-      'workingDays': workingDays.map((day) => day.toJson()).toList(),
-      'menu': menu.map((item) => item.toJson()).toList(),
-      'owner': owner.toJson(),
-      'panNumber': panNumber,
-      'gstinNumber': gstinNumber,
-      'bankDetails': bankDetails.toJson(),
-      'fssaiRegistrationNumber': fssaiRegistrationNumber,
-    };
-  }
+  String toRawJson() => json.encode(toJson());
+
+  factory RestaurantModel.fromJson(Map<String, dynamic> json) =>
+      RestaurantModel(
+        images: List<String>.from(json["images"].map((x) => x)),
+        id: json["_id"],
+        name: json["name"],
+        location: Location.fromJson(json["location"]),
+        workingDays: List<WorkingDay>.from(
+            json["workingDays"].map((x) => WorkingDay.fromJson(x))),
+        favoriteBy: json["favoriteBy"] != null
+            ? List<String>.from(json["favoriteBy"].map((x) => x))
+            : [],
+        createdAt: DateTime.parse(json["createdAt"]),
+        updatedAt: DateTime.parse(json["updatedAt"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "images": List<dynamic>.from(images.map((x) => x)),
+        "_id": id,
+        "name": name,
+        "location": location.toJson(),
+        "workingDays": List<dynamic>.from(workingDays.map((x) => x.toJson())),
+        "favoriteBy": List<dynamic>.from(favoriteBy.map((x) => x)),
+        "createdAt": createdAt.toIso8601String(),
+        "updatedAt": updatedAt.toIso8601String(),
+      };
+}
+
+class Location {
+  String id;
+  String address;
+  String city;
+  String state;
+  String zipCode;
+  String country;
+  double latitude;
+  double longitude;
+  int v;
+
+  Location({
+    required this.id,
+    required this.address,
+    required this.city,
+    required this.state,
+    required this.zipCode,
+    required this.country,
+    required this.latitude,
+    required this.longitude,
+    required this.v,
+  });
+
+  factory Location.fromRawJson(String str) =>
+      Location.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory Location.fromJson(Map<String, dynamic> json) => Location(
+        id: json["_id"],
+        address: json["address"],
+        city: json["city"],
+        state: json["state"],
+        zipCode: json["zipCode"],
+        country: json["country"],
+        latitude: json["latitude"]?.toDouble(),
+        longitude: json["longitude"]?.toDouble(),
+        v: json["__v"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "_id": id,
+        "address": address,
+        "city": city,
+        "state": state,
+        "zipCode": zipCode,
+        "country": country,
+        "latitude": latitude,
+        "longitude": longitude,
+        "__v": v,
+      };
+}
+
+class WorkingDay {
+  String id;
+  String days;
+  String openingTime;
+  String closingTime;
+  int v;
+
+  WorkingDay({
+    required this.id,
+    required this.days,
+    required this.openingTime,
+    required this.closingTime,
+    required this.v,
+  });
+
+  factory WorkingDay.fromRawJson(String str) =>
+      WorkingDay.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory WorkingDay.fromJson(Map<String, dynamic> json) => WorkingDay(
+        id: json["_id"],
+        days: json["days"],
+        openingTime: json["openingTime"],
+        closingTime: json["closingTime"],
+        v: json["__v"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "_id": id,
+        "days": days,
+        "openingTime": openingTime,
+        "closingTime": closingTime,
+        "__v": v,
+      };
 }

@@ -14,8 +14,8 @@ class SharedPreferencesService {
   }
 
   // Get String
-  static String? getString(String key) {
-    return _prefs.getString(key);
+  static String getString(String key) {
+    return _prefs.getString(key) ?? '';
   }
 
   // Set Int
