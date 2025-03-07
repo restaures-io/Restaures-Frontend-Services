@@ -1,24 +1,38 @@
+import 'dart:convert';
+
 class WorkingDay {
-  final List<String> days;
-  final Map<String, dynamic> hours;
+  String id;
+  String days;
+  String openingTime;
+  String closingTime;
+  int v;
 
   WorkingDay({
+    required this.id,
     required this.days,
-    required this.hours,
+    required this.openingTime,
+    required this.closingTime,
+    required this.v,
   });
 
-  factory WorkingDay.fromJson(Map<String, dynamic> json) {
-    return WorkingDay(
-      days: List<String>.from(json['days']),
-      hours: json['hours'],
-    );
-  }
+  factory WorkingDay.fromRawJson(String str) =>
+      WorkingDay.fromJson(json.decode(str));
 
-  Map<String, dynamic> toJson() {
-    return {
-      'days': days,
-      'hours': hours,
-    };
-  }
+  String toRawJson() => json.encode(toJson());
+
+  factory WorkingDay.fromJson(Map<String, dynamic> json) => WorkingDay(
+        id: json["_id"],
+        days: json["days"],
+        openingTime: json["openingTime"],
+        closingTime: json["closingTime"],
+        v: json["__v"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "_id": id,
+        "days": days,
+        "openingTime": openingTime,
+        "closingTime": closingTime,
+        "__v": v,
+      };
 }
-

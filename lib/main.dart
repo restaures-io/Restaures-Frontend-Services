@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:restaures/components/Theme/global_theme.dart';
+import 'package:restaures/pages/customer/bottom_navigator_user_view.dart';
+import 'package:restaures/pages/restaurant/bottom_navigator_restaurant_view.dart';
 import 'package:restaures/pages/welcome_page.dart';
 import 'package:restaures/utils/shared_prefrences.dart';
 import 'package:toastification/toastification.dart';
@@ -12,6 +16,18 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  Widget _getScreen() {
+    log('access_token: ${SharedPreferencesService.getString('access_token')}');
+    if (SharedPreferencesService.getString('access_token') != '') {
+      if (SharedPreferencesService.getString('account_type') == 'customer') {
+        return const BottomNavigatorUserView();
+      } else {
+        return const BottomNavigatorRestaurantView();
+      }
+    }
+    return WelcomeScreenDartView();
+  }
+
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
@@ -31,7 +47,7 @@ class MyApp extends StatelessWidget {
           child: child!,
         );
       },
-      home: WelcomeScreenDartView(),
+      home: _getScreen(),
     ));
   }
 }

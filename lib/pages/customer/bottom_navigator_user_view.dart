@@ -4,23 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:restaures/pages/customer/customer_profile_view.dart';
+import 'package:restaures/pages/customer/enquiry_customer_view.dart';
+import 'package:restaures/pages/customer/favorite_restaurant_customer_view.dart';
 import 'package:restaures/pages/customer/food_items_customer_view.dart';
-import 'package:restaures/pages/customer/home_screen_user_view.dart';
+import 'package:restaures/pages/customer/search_page.dart';
+import 'package:restaures/pages/customer/trending_restaurant_page.dart';
 
 class BottomNavigatorUserView extends StatefulWidget {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.w600);
   static final List<Widget> _widgetOptions = <Widget>[
-    HomeScreenUserView(),
-    FoodItemCustomerPage(),
-    const Text(
-      'Search',
-      style: optionStyle,
-    ),
-    const Text(
-      'Profile',
-      style: optionStyle,
-    ),
+    TrendingRestaurantView(),
+    EnquiryCustomerView(),
+    SearchView(),
+    ProfileScreen(),
   ];
 
   const BottomNavigatorUserView({super.key});
@@ -71,8 +69,8 @@ class _BottomNavigatorUserViewState extends State<BottomNavigatorUserView> {
                     text: 'Home',
                   ),
                   GButton(
-                    icon: LineIcons.table,
-                    text: 'Food',
+                    icon: Icons.query_builder,
+                    text: 'Enquiry',
                   ),
                   GButton(
                     icon: LineIcons.search,
