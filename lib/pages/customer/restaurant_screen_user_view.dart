@@ -35,7 +35,7 @@ class _RestaurantScreenUserViewState extends State<RestaurantScreenUserView> {
         items.add(MenuItem.fromJson(item));
       });
       setState(() {
-        foodItems = items;
+        foodItemsFiltered = foodItems = items;
       });
     }
   }
@@ -85,12 +85,53 @@ class _RestaurantScreenUserViewState extends State<RestaurantScreenUserView> {
     _isLiked = widget.restaurant.favoriteBy.contains(user_id);
   }
 
+  String selectedCategory = 'All Menu';
+
   List<MenuItem> foodItems = [];
+  List<MenuItem> foodItemsFiltered = [];
   bool _isLiked = false;
   bool _isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              List<String> categories =
+                  foodItems.map((e) => e.category).toSet().toList();
+              categories.insert(0, 'All Menu');
+              return Container(
+                padding: const EdgeInsets.all(16.0),
+                height: 300, // Adjust height as needed
+                child: ListView.builder(
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(categories[index]),
+                      onTap: () {
+                        if (index == 0) {
+                          foodItemsFiltered = foodItems;
+                        } else {
+                          foodItemsFiltered = foodItems
+                              .where((element) =>
+                                  element.category == categories[index])
+                              .toList();
+                        }
+                        selectedCategory = categories[index];
+                        Navigator.pop(context);
+                        setState(() {});
+                      },
+                    );
+                  },
+                ),
+              );
+            },
+          );
+        },
+        child: const Icon(Icons.menu),
+      ),
       body: SafeArea(
         child: _isLoading
             ? Center(
@@ -132,9 +173,9 @@ class _RestaurantScreenUserViewState extends State<RestaurantScreenUserView> {
                         children: [
                           Row(
                             children: [
-                              const TagWidget(
+                              TagWidget(
                                 tagColor: Colors.green,
-                                text: '4.5',
+                                text: widget.restaurant.rating.toString(),
                                 icon: Icons.star,
                                 color: Colors.white,
                               ),
@@ -146,15 +187,6 @@ class _RestaurantScreenUserViewState extends State<RestaurantScreenUserView> {
                                 text: '32m',
                                 icon: Icons.timer_outlined,
                                 color: Colors.white,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              const TagWidget(
-                                tagColor: Colors.white,
-                                text: '₹500/2',
-                                icon: Icons.person_2_outlined,
-                                color: Colors.black,
                               ),
                               const Spacer(),
                               IconButton(
@@ -208,14 +240,14 @@ class _RestaurantScreenUserViewState extends State<RestaurantScreenUserView> {
                     ),
                     // menu
 
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.all(10.0),
                       child: Column(
                         children: [
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Menu',
+                              selectedCategory,
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w300,
@@ -231,7 +263,7 @@ class _RestaurantScreenUserViewState extends State<RestaurantScreenUserView> {
                     const SizedBox(
                       height: 10,
                     ),
-                    MenuItemGridView(foodItems: foodItems)
+                    MenuItemGridView(foodItems: foodItemsFiltered)
                   ],
                 ),
               ),

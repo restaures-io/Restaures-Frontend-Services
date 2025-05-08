@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaures/pages/customer/bottom_navigator_user_view.dart';
+import 'package:restaures/service/auth_service.dart';
+import 'package:restaures/utils/shared_prefrences.dart';
 
 import 'package:restaures/widgets/custom_button.dart';
 import 'package:restaures/widgets/custom_text_field.dart';
@@ -32,7 +37,41 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
     super.dispose();
   }
 
-  Future<void> _register() async {}
+  Future<void> _register() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      // Here you would typically call your API to register the user
+      // For example:
+      final response = await AuthService.registerCustomer(
+        firstName: _firstNameController.text,
+        lastName: _lastNameController.text,
+        email: _emailController.text,
+        phone: _phoneController.text,
+        password: _passwordController.text,
+      );
+
+      if (response.success) {
+        await SharedPreferencesService.setString(
+            'access_token', response.data['access_token']);
+        await SharedPreferencesService.setString('account_type', 'customer');
+        await SharedPreferencesService.setString(
+            'user_id', response.data['_id']);
+        await SharedPreferencesService.setString(
+            'user', jsonEncode(response.data));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const BottomNavigatorUserView()));
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      // Handle the response accordingly
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

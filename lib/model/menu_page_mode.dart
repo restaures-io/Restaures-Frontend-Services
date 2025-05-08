@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:restaures/model/enquiry.dart';
+
 class MenuPageModel {
   String id;
   String name;
@@ -9,6 +11,8 @@ class MenuPageModel {
   List<String> images;
   int timeToPrepare;
   String category;
+  List<Rating> ratings;
+  double avgRating = 0;
   int v;
 
   MenuPageModel({
@@ -20,6 +24,8 @@ class MenuPageModel {
     required this.images,
     required this.timeToPrepare,
     required this.category,
+    required this.ratings,
+    required this.avgRating,
     required this.v,
   });
 
@@ -28,17 +34,31 @@ class MenuPageModel {
 
   String toRawJson() => json.encode(toJson());
 
-  factory MenuPageModel.fromJson(Map<String, dynamic> json) => MenuPageModel(
-        id: json["_id"],
-        name: json["name"],
-        restaurantId: RestaurantId.fromJson(json["restaurant_id"]),
-        description: json["description"],
-        price: json["price"],
-        images: List<String>.from(json["images"].map((x) => x)),
-        timeToPrepare: json["timeToPrepare"],
-        category: json["category"],
-        v: json["__v"],
-      );
+  factory MenuPageModel.fromJson(Map<String, dynamic> json) {
+    List<Rating> ratingsList = (json["ratings"] as List<dynamic>?)
+            ?.map((x) => Rating.fromJson(x))
+            .toList() ??
+        [];
+
+    double avgRating = ratingsList.isNotEmpty
+        ? ratingsList.map((e) => e.score).reduce((a, b) => a + b) /
+            ratingsList.length
+        : 0.0;
+
+    return MenuPageModel(
+      id: json["_id"],
+      name: json["name"],
+      restaurantId: RestaurantId.fromJson(json["restaurant_id"]),
+      description: json["description"],
+      price: json["price"],
+      images: List<String>.from(json["images"].map((x) => x)),
+      timeToPrepare: json["timeToPrepare"],
+      category: json["category"],
+      ratings: ratingsList,
+      avgRating: avgRating,
+      v: json["__v"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "_id": id,

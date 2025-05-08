@@ -111,9 +111,9 @@ class _MenuItemViewState extends State<MenuItemView> {
                         children: [
                           Row(
                             children: [
-                              const TagWidget(
+                              TagWidget(
                                 tagColor: Colors.green,
-                                text: '4.5',
+                                text: '${menuPageModel.avgRating}',
                                 icon: Icons.star,
                                 color: Colors.white,
                               ),

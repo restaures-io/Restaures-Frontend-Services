@@ -228,6 +228,7 @@ class _AddMenuRestaurantViewState extends State<AddMenuRestaurantView> {
                           price: int.parse(priceController.text.trim()),
                           timeToPrepare:
                               int.parse(timeToPrepareController.text.trim()),
+                          ratings: [],
                         ),
                       );
 

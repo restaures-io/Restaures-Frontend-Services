@@ -3,9 +3,11 @@ import 'package:getwidget/getwidget.dart';
 import 'package:restaures/components/Global/api_response.dart';
 import 'package:restaures/model/enquiry.dart';
 import 'package:restaures/service/enquiry_service.dart';
+import 'package:restaures/service/menu_service.dart';
 import 'package:restaures/widgets/custom_card.dart';
 import 'package:slider_button/slider_button.dart';
 import 'package:toastification/toastification.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class EnquiryCustomerView extends StatefulWidget {
   const EnquiryCustomerView({super.key});
@@ -208,7 +210,7 @@ class _EnquiryCustomerViewState extends State<EnquiryCustomerView> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "ETA ${enquiry.menuId.timeToPrepare}m",
+                                    "ETA ${enquiry.timeToPrepare}m",
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -376,6 +378,159 @@ class _EnquiryCustomerViewState extends State<EnquiryCustomerView> {
                                 backgroundImage:
                                     NetworkImage(enquiry.menuId.images[0]),
                               ),
+                              onTap: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20)),
+                                  ),
+                                  builder: (context) {
+                                    return SingleChildScrollView(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          GFCard(
+                                            boxFit: BoxFit.cover,
+                                            title: GFListTile(
+                                              avatar: GFAvatar(
+                                                backgroundImage: NetworkImage(
+                                                    enquiry.menuId.images[0]),
+                                                shape: GFAvatarShape.standard,
+                                              ),
+                                              titleText: enquiry.menuId.name,
+                                              subTitleText:
+                                                  "By ${enquiry.restaurantId.name}",
+                                              icon: const Icon(Icons.fastfood,
+                                                  color: GFColors.PRIMARY),
+                                            ),
+                                            content: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    TagWidget(
+                                                      tagColor: Colors.green,
+                                                      text: enquiry.status,
+                                                      icon: Icons.restaurant,
+                                                      color: Colors.white,
+                                                    ),
+                                                    // ETA
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    TagWidget(
+                                                      tagColor: Colors.black,
+                                                      text:
+                                                          '${enquiry.menuId.timeToPrepare}m',
+                                                      icon: Icons.timer,
+                                                      color: Colors.white,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    TagWidget(
+                                                      tagColor: Colors.black,
+                                                      text:
+                                                          '${enquiry.quantity}',
+                                                      icon: Icons.shopping_cart,
+                                                      color: Colors.white,
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    TagWidget(
+                                                      tagColor: Colors.white,
+                                                      text:
+                                                          '${enquiry.totalPrice}',
+                                                      icon:
+                                                          Icons.currency_rupee,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  enquiry.menuId.description,
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 5,
+                                                ),
+                                                if (enquiry.menuId.ratings
+                                                    .where((element) =>
+                                                        element.customerId ==
+                                                        enquiry.customerId.id)
+                                                    .isNotEmpty)
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  )
+                                                else
+                                                  Column(
+                                                    children: [
+                                                      RatingBar.builder(
+                                                        initialRating: 0,
+                                                        minRating: 1,
+                                                        direction:
+                                                            Axis.horizontal,
+                                                        allowHalfRating: true,
+                                                        itemCount: 5,
+                                                        itemPadding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal:
+                                                                    4.0),
+                                                        itemBuilder:
+                                                            (context, _) =>
+                                                                Icon(
+                                                          Icons.star,
+                                                          color: Colors.amber,
+                                                        ),
+                                                        onRatingUpdate:
+                                                            (rating) async {
+                                                          ApiResponse response =
+                                                              await MenuService
+                                                                  .updateMenuRating(
+                                                                      enquiry
+                                                                          .menuId
+                                                                          .id,
+                                                                      rating);
+                                                          if (response
+                                                              .success) {
+                                                            toastification.show(
+                                                              title: Text(
+                                                                  "Rating Updated"),
+                                                              showIcon: true,
+                                                              type:
+                                                                  ToastificationType
+                                                                      .success,
+                                                              autoCloseDuration:
+                                                                  const Duration(
+                                                                      seconds:
+                                                                          5),
+                                                            );
+                                                            getEnquiries();
+                                                          }
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                      )
+                                                    ],
+                                                  ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
                               title: Text(enquiry.menuId.name),
                               description:
                                   Text("By ${enquiry.restaurantId.name}"),

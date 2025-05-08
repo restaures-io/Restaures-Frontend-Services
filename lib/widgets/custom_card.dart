@@ -21,7 +21,7 @@ class RestaurantCardWidget extends StatelessWidget {
         // rating
         TagWidget(
           tagColor: Colors.green,
-          text: '4.5',
+          text: restaurant.rating.toString(),
           icon: Icons.star,
           color: Colors.white,
         ),
@@ -31,12 +31,6 @@ class RestaurantCardWidget extends StatelessWidget {
           icon: Icons.timer_outlined,
           color: Colors.white,
         ),
-        TagWidget(
-          tagColor: Colors.white,
-          text: '₹500/2',
-          icon: Icons.person_2_outlined,
-          color: Colors.black,
-        )
       ],
       title: Text(
         restaurant.name,
