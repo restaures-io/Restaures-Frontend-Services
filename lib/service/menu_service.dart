@@ -21,4 +21,11 @@ class MenuService {
   static Future<ApiResponse> getMenuById(String menuId) async {
     return await _apiService.get('${ApiUrl.getMenu}/$menuId');
   }
+
+  static Future<ApiResponse> updateMenuRating(
+      String menuID, double rating) async {
+    return await _apiService.put('customer/menu/rate/$menuID', {
+      'rating': rating,
+    });
+  }
 }

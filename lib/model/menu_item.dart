@@ -9,6 +9,7 @@ class MenuItem {
   List<String> images;
   int timeToPrepare;
   String category;
+  List<Rating> ratings;
 
   MenuItem({
     this.id,
@@ -19,6 +20,7 @@ class MenuItem {
     required this.images,
     required this.timeToPrepare,
     required this.category,
+    required this.ratings,
   });
 
   factory MenuItem.fromRawJson(String str) =>
@@ -35,6 +37,8 @@ class MenuItem {
         images: List<String>.from(json["images"].map((x) => x)),
         timeToPrepare: json["timeToPrepare"],
         category: json["category"],
+        ratings:
+            List<Rating>.from(json["ratings"].map((x) => Rating.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -46,5 +50,33 @@ class MenuItem {
         "images": List<dynamic>.from(images.map((x) => x)),
         "timeToPrepare": timeToPrepare,
         "category": category,
+      };
+}
+
+class Rating {
+  String customerId;
+  int score;
+  String id;
+
+  Rating({
+    required this.customerId,
+    required this.score,
+    required this.id,
+  });
+
+  factory Rating.fromRawJson(String str) => Rating.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory Rating.fromJson(Map<String, dynamic> json) => Rating(
+        customerId: json["customer_id"],
+        score: json["score"],
+        id: json["_id"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "customer_id": customerId,
+        "score": score,
+        "_id": id,
       };
 }

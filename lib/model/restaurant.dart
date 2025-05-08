@@ -7,6 +7,8 @@ class RestaurantModel {
   Location location;
   List<WorkingDay> workingDays;
   List<String> favoriteBy;
+  double rating;
+
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -17,6 +19,7 @@ class RestaurantModel {
     required this.location,
     required this.workingDays,
     required this.favoriteBy,
+    required this.rating,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -37,6 +40,7 @@ class RestaurantModel {
         favoriteBy: json["favoriteBy"] != null
             ? List<String>.from(json["favoriteBy"].map((x) => x))
             : [],
+        rating: json["rating"] != null ? json["rating"].toDouble() : 0,
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
       );
@@ -48,6 +52,7 @@ class RestaurantModel {
         "location": location.toJson(),
         "workingDays": List<dynamic>.from(workingDays.map((x) => x.toJson())),
         "favoriteBy": List<dynamic>.from(favoriteBy.map((x) => x)),
+        "rating": rating,
         "createdAt": createdAt.toIso8601String(),
         "updatedAt": updatedAt.toIso8601String(),
       };

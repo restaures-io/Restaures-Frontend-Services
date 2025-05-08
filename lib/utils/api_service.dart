@@ -14,7 +14,7 @@ class ApiService {
   }
 
   String _accessToken() {
-    return SharedPreferencesService.getString('access_token') ?? '';
+    return SharedPreferencesService.getString('access_token');
   }
 
   Map<String, String> _headers() {
